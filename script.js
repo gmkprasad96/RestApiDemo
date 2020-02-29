@@ -55,6 +55,46 @@ app.post('/api/customers', (req, res) => {
     res.send(customer);
 });
 
+
+
+//Update Customers Information
+app.put('/api/customers/:id', (req, res) => {
+    const customer = customers.find(cust => cust.id == parseInt(req.params.id));
+
+    //checks whether customer data existed or not
+    if(!customer){
+        res.status(404).send('<h2>Sorry Customer Data not Found !</h2>');
+    }else{
+        
+        const { err } = validateCustData(req.body);
+
+        if(err){
+            res.status(400).send(err.details[0].message);
+            return;
+        }
+    
+        customer.title = req.body.title;
+        res.send(customer);
+    }
+});
+
+//Delete Customers Data
+app.delete('/api/customers/:id', (req, res) => {
+    const customer = customers.find(cust => cust.id == parseInt(req.params.id));
+
+    //checks whether customer data existed or not
+    if(!customer){
+        res.status(404).send('<h2>Sorry Customer Data not Found !</h2>');
+    }else{
+        
+        const index = customers.indexOf(customer);
+        customers.splice(index, 1);
+        
+        res.send(customer);
+    }
+});
+
+
 function validateCustData(customer) {
 
     const CustName = {
